@@ -1,0 +1,14 @@
+# Environment
+.env
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.nupkg
+
+# Node / Frontend
+node_modules/
+frontend/dist/
