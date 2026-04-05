@@ -1,0 +1,31 @@
+### Create user (expect 201)
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{ "username": "alice", "password": "Test@1234" }
+
+###
+
+### Create user — duplicate username (expect 409)
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{ "username": "alice", "password": "Other@5678" }
+
+###
+
+### Create user — missing fields (expect 400)
+POST http://localhost:5000/api/users
+Content-Type: application/json
+
+{ "username": "", "password": "" }
+
+###
+
+### Get user (expect 200)
+GET http://localhost:5000/api/users/1
+
+###
+
+### Get user — not found (expect 404)
+GET http://localhost:5000/api/users/99999
