@@ -19,6 +19,12 @@ public class UsersController(AppDbContext db) : ControllerBase
         if (db.Users.Any(u => u.Username == request.Username))
             return Conflict("Username is already taken.");
 
+        if (request.Username.Length != 4 || !request.Username.All(char.IsDigit))
+            return BadRequest("Username must be a 4-digit number.");
+
+        if (request.Password.Length < 4 || request.Password.Length > 16)
+            return BadRequest("Password must be between 4 and 16 characters.");
+
         var user = new User
         {
             Username = request.Username,
