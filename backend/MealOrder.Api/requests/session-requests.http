@@ -1,0 +1,44 @@
+### Login — valid credentials (expect 201 with token)
+POST http://localhost:5000/api/sessions
+Content-Type: application/json
+
+{ "username": "1234", "password": "Test@1234" }
+
+###
+
+### Login — wrong password (expect 401)
+POST http://localhost:5000/api/sessions
+Content-Type: application/json
+
+{ "username": "1234", "password": "wrongpassword" }
+
+###
+
+### Login — nonexistent username (expect 401, same message as wrong password)
+POST http://localhost:5000/api/sessions
+Content-Type: application/json
+
+{ "username": "9999", "password": "Test@1234" }
+
+###
+
+### Validate session — valid token (expect 200 with userId and username)
+# Replace TOKEN with the token returned from login above
+GET http://localhost:5000/api/sessions/TOKEN
+
+###
+
+### Validate session — nonexistent token (expect 404)
+GET http://localhost:5000/api/sessions/notarealtoken
+
+###
+
+### Logout — valid token (expect 204)
+# Replace TOKEN with the token returned from login above
+DELETE http://localhost:5000/api/sessions/TOKEN
+
+###
+
+### Validate session after logout (expect 404)
+# Replace TOKEN with the same token used in logout above
+GET http://localhost:5000/api/sessions/TOKEN
