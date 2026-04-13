@@ -3,7 +3,7 @@ import * as api from '../api'
 
 const TOKEN_KEY = 'session_token'
 
-const user = ref<{ userId: number; username: string } | null>(null)
+const user = ref<{ id: number; username: string; firstName: string; lastName: string } | null>(null)
 const token = ref<string | null>(null)
 const initializing = ref(true)
 
@@ -35,8 +35,8 @@ export function useAuth() {
     user.value = info
   }
 
-  async function register(username: string, password: string) {
-    await api.registerUser(username, password)
+  async function register(username: string, password: string, firstName: string, lastName: string) {
+    await api.registerUser(username, password, firstName, lastName)
     await login(username, password)
   }
 

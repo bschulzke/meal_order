@@ -1,6 +1,8 @@
 export interface UserResponse {
   id: number
   username: string
+  firstName: string
+  lastName: string
 }
 
 export interface SessionResponse {
@@ -9,8 +11,10 @@ export interface SessionResponse {
 }
 
 export interface SessionInfo {
-  userId: number
+  id: number
   username: string
+  firstName: string
+  lastName: string
 }
 
 export interface ApiError {
@@ -32,11 +36,11 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json()
 }
 
-export async function registerUser(username: string, password: string): Promise<UserResponse> {
+export async function registerUser(username: string, password: string, firstName: string, lastName: string): Promise<UserResponse> {
   const res = await fetch('/api/users', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password, firstName, lastName }),
   })
   return handleResponse<UserResponse>(res)
 }

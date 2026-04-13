@@ -13,7 +13,7 @@ async function onLogout() {
 
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center gap-4">
-    <h1 class="text-3xl font-bold">Hello, {{ user?.username }}</h1>
+    <h1 class="text-3xl font-bold">Hello, {{ user?.firstName }} {{ user?.lastName }} ({{ user?.username }})</h1>
     <button class="btn btn-outline" @click="onLogout">Log out</button>
   </div>
 </template>

@@ -47,7 +47,7 @@ public class SessionsController(AppDbContext db) : ControllerBase
         if (session.ExpiresAt < DateTime.UtcNow)
             return Unauthorized("Session has expired.");
 
-        return Ok(new { session.User.Id, session.User.Username });
+        return Ok(new { session.User.Id, session.User.Username, session.User.FirstName, session.User.LastName });
     }
 
     [HttpDelete("{token}")]

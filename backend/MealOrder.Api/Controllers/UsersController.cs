@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrder.Api.Controllers;
 
-public record CreateUserRequest(string Username, string Password);
+public record CreateUserRequest(string Username, string Password, string FirstName, string LastName);
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,6 +15,12 @@ public class UsersController(AppDbContext db) : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             return BadRequest("Username and password are required.");
+
+        if (string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName))
+            return BadRequest("First name and last name are required.");
+
+        if (request.FirstName.Length > 25 || request.LastName.Length > 25)
+            return BadRequest("First name and last name must be 25 characters or fewer.");
 
         if (db.Users.Any(u => u.Username == request.Username))
             return Conflict("Username is already taken.");
@@ -29,12 +35,14 @@ public class UsersController(AppDbContext db) : ControllerBase
         {
             Username = request.Username,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            FirstName = request.FirstName.Trim(),
+            LastName = request.LastName.Trim(),
         };
 
         db.Users.Add(user);
         await db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new { user.Id, user.Username });
+        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new { user.Id, user.Username, user.FirstName, user.LastName });
     }
 
     [HttpGet("{id}")]
@@ -44,6 +52,6 @@ public class UsersController(AppDbContext db) : ControllerBase
         if (user == null)
             return NotFound();
 
-        return Ok(new { user.Id, user.Username });
+        return Ok(new { user.Id, user.Username, user.FirstName, user.LastName });
     }
 }

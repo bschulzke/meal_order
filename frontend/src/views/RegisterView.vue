@@ -11,9 +11,13 @@ const { register } = useAuth()
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const firstName = ref('')
+const lastName = ref('')
 const usernameError = ref('')
 const passwordError = ref('')
 const confirmPasswordError = ref('')
+const firstNameError = ref('')
+const lastNameError = ref('')
 const error = ref('')
 const loading = ref(false)
 
@@ -21,7 +25,15 @@ function validate(): boolean {
   usernameError.value = ''
   passwordError.value = ''
   confirmPasswordError.value = ''
+  firstNameError.value = ''
+  lastNameError.value = ''
 
+  if (!firstName.value.trim() || firstName.value.trim().length > 25) {
+    firstNameError.value = 'First name must be 1-25 characters'
+  }
+  if (!lastName.value.trim() || lastName.value.trim().length > 25) {
+    lastNameError.value = 'Last name must be 1-25 characters'
+  }
   if (!/^\d{4}$/.test(username.value)) {
     usernameError.value = 'Username must be exactly 4 digits'
   }
@@ -32,7 +44,7 @@ function validate(): boolean {
     confirmPasswordError.value = 'Passwords do not match'
   }
 
-  return !usernameError.value && !passwordError.value && !confirmPasswordError.value
+  return !firstNameError.value && !lastNameError.value && !usernameError.value && !passwordError.value && !confirmPasswordError.value
 }
 
 async function onSubmit() {
@@ -41,7 +53,7 @@ async function onSubmit() {
 
   loading.value = true
   try {
-    await register(username.value, password.value)
+    await register(username.value, password.value, firstName.value.trim(), lastName.value.trim())
     router.push('/')
   } catch (e: any) {
     error.value = e.message
@@ -59,6 +71,18 @@ async function onSubmit() {
     :error="error"
     @submit="onSubmit"
   >
+    <FormInput
+      v-model="firstName"
+      label="First Name"
+      placeholder="Jane"
+      :error="firstNameError"
+    />
+    <FormInput
+      v-model="lastName"
+      label="Last Name"
+      placeholder="Smith"
+      :error="lastNameError"
+    />
     <FormInput
       v-model="username"
       label="Username"
