@@ -13,13 +13,20 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
-  const { isLoggedIn } = useAuth()
+let initPromise: Promise<void> | null = null
 
-  if (to.meta.requiresAuth && !isLoggedIn.value) {
+router.beforeEach(async (to) => {
+  const auth = useAuth()
+
+  if (!initPromise) {
+    initPromise = auth.init()
+  }
+  await initPromise
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn.value) {
     return '/login'
   }
-  if ((to.path === '/login' || to.path === '/register') && isLoggedIn.value) {
+  if ((to.path === '/login' || to.path === '/register') && auth.isLoggedIn.value) {
     return '/'
   }
 })

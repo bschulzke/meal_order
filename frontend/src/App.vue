@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { useAuth } from './composables/useAuth'
 
-const { initializing, init } = useAuth()
-
-onMounted(() => init())
+const { initializing } = useAuth()
 </script>
 
 <template>
