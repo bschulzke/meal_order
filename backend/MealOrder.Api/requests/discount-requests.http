@@ -1,0 +1,57 @@
+### Create discount — percent (expect 201)
+POST http://localhost:5000/api/discounts
+Content-Type: application/json
+
+{ "name": "10% Off", "type": "percent", "amount": 10 }
+
+###
+
+### Create discount — fixed (expect 201)
+POST http://localhost:5000/api/discounts
+Content-Type: application/json
+
+{ "name": "$2 Off", "type": "fixed", "amount": 2.00 }
+
+###
+
+### Create discount — invalid type (expect 400)
+POST http://localhost:5000/api/discounts
+Content-Type: application/json
+
+{ "name": "Bad", "type": "bogus", "amount": 5 }
+
+###
+
+### Create discount — percent over 100 (expect 400)
+POST http://localhost:5000/api/discounts
+Content-Type: application/json
+
+{ "name": "Too Much", "type": "percent", "amount": 150 }
+
+###
+
+### Get all active discounts (expect 200)
+GET http://localhost:5000/api/discounts
+
+###
+
+### Get discount by id (expect 200)
+GET http://localhost:5000/api/discounts/1
+
+###
+
+### Update discount (expect 200)
+PUT http://localhost:5000/api/discounts/1
+Content-Type: application/json
+
+{ "name": "15% Off", "type": "percent", "amount": 15 }
+
+###
+
+### Delete (soft) discount (expect 204)
+DELETE http://localhost:5000/api/discounts/1
+
+###
+
+### Get deleted discount by id (expect 200, isActive: false)
+GET http://localhost:5000/api/discounts/1

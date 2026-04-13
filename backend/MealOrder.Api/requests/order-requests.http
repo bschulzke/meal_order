@@ -1,0 +1,62 @@
+### Create order (expect 201)
+# Assumes menu items 1,2 / discount 1 / tax 1 exist
+POST http://localhost:5000/api/orders
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "items": [
+    { "menuItemId": 1, "quantity": 1 },
+    { "menuItemId": 2, "quantity": 2 }
+  ],
+  "discountIds": [1],
+  "taxIds": [1]
+}
+
+###
+
+### Get all orders (expect 200)
+GET http://localhost:5000/api/orders
+
+###
+
+### Get order by id (expect 200 — snapshot values)
+GET http://localhost:5000/api/orders/1
+
+###
+
+### Update order — Option C (expect 200)
+# Add item 3 (new snapshot), keep item 1 (retain old snapshot), remove item 2
+PUT http://localhost:5000/api/orders/1
+Content-Type: application/json
+
+{
+  "items": [
+    { "menuItemId": 1, "quantity": 3 },
+    { "menuItemId": 3, "quantity": 1 }
+  ],
+  "discountIds": [1],
+  "taxIds": [1, 2]
+}
+
+###
+
+### Update order — empty items (expect 400)
+PUT http://localhost:5000/api/orders/1
+Content-Type: application/json
+
+{
+  "items": [],
+  "discountIds": [],
+  "taxIds": []
+}
+
+###
+
+### Delete order (expect 204)
+DELETE http://localhost:5000/api/orders/1
+
+###
+
+### Get deleted order (expect 404)
+GET http://localhost:5000/api/orders/1
