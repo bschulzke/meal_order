@@ -1,10 +1,13 @@
+# Replace with a valid token from POST /api/sessions
+@token = YOUR_TOKEN_HERE
+
 ### Create order (expect 201)
 # Assumes menu items 1,2 / discount 1 / tax 1 exist
 POST http://localhost:5000/api/orders
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "userId": 1,
   "items": [
     { "menuItemId": 1, "quantity": 1 },
     { "menuItemId": 2, "quantity": 2 }
@@ -17,11 +20,13 @@ Content-Type: application/json
 
 ### Get all orders (expect 200)
 GET http://localhost:5000/api/orders
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get order by id (expect 200 — snapshot values)
 GET http://localhost:5000/api/orders/1
+Authorization: Bearer {{token}}
 
 ###
 
@@ -29,6 +34,7 @@ GET http://localhost:5000/api/orders/1
 # Add item 3 (new snapshot), keep item 1 (retain old snapshot), remove item 2
 PUT http://localhost:5000/api/orders/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "items": [
@@ -44,6 +50,7 @@ Content-Type: application/json
 ### Update order — empty items (expect 400)
 PUT http://localhost:5000/api/orders/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "items": [],
@@ -55,8 +62,10 @@ Content-Type: application/json
 
 ### Delete order (expect 204)
 DELETE http://localhost:5000/api/orders/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get deleted order (expect 404)
 GET http://localhost:5000/api/orders/1
+Authorization: Bearer {{token}}

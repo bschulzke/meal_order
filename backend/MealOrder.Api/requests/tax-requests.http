@@ -1,6 +1,10 @@
+# Replace with a valid token from POST /api/sessions
+@token = YOUR_TOKEN_HERE
+
 ### Create tax (expect 201)
 POST http://localhost:5000/api/taxes
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "City Tax", "percentage": 4.00 }
 
@@ -9,6 +13,7 @@ Content-Type: application/json
 ### Create tax (expect 201)
 POST http://localhost:5000/api/taxes
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "State Tax", "percentage": 6.25 }
 
@@ -17,6 +22,7 @@ Content-Type: application/json
 ### Create tax — invalid percentage (expect 400)
 POST http://localhost:5000/api/taxes
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Bad Tax", "percentage": 0 }
 
@@ -24,17 +30,20 @@ Content-Type: application/json
 
 ### Get all active taxes (expect 200)
 GET http://localhost:5000/api/taxes
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get tax by id (expect 200)
 GET http://localhost:5000/api/taxes/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Update tax (expect 200)
 PUT http://localhost:5000/api/taxes/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "City Tax", "percentage": 4.50 }
 
@@ -42,8 +51,10 @@ Content-Type: application/json
 
 ### Delete (soft) tax (expect 204)
 DELETE http://localhost:5000/api/taxes/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get deleted tax by id (expect 200, isActive: false)
 GET http://localhost:5000/api/taxes/1
+Authorization: Bearer {{token}}

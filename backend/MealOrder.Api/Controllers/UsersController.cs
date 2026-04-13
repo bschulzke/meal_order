@@ -1,5 +1,6 @@
 using MealOrder.Api.Data;
 using MealOrder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MealOrder.Api.Controllers;
@@ -11,6 +12,7 @@ public record CreateUserRequest(string Username, string Password, string FirstNa
 public class UsersController(AppDbContext db) : ControllerBase
 {
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))

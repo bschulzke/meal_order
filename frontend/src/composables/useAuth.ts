@@ -43,7 +43,7 @@ export function useAuth() {
   async function logout() {
     if (token.value) {
       try {
-        await api.logout(token.value)
+        await api.logout()
       } catch {
         // ignore logout errors
       }

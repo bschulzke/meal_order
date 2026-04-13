@@ -1,3 +1,6 @@
+# Replace with a valid token from the login response below
+@token = YOUR_TOKEN_HERE
+
 ### Login — valid credentials (expect 201 with token)
 POST http://localhost:5000/api/sessions
 Content-Type: application/json
@@ -33,9 +36,9 @@ GET http://localhost:5000/api/sessions/notarealtoken
 
 ###
 
-### Logout — valid token (expect 204)
-# Replace TOKEN with the token returned from login above
-DELETE http://localhost:5000/api/sessions/TOKEN
+### Logout — valid session (expect 204)
+DELETE http://localhost:5000/api/sessions
+Authorization: Bearer {{token}}
 
 ###
 

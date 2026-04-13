@@ -1,6 +1,10 @@
+# Replace with a valid token from POST /api/sessions
+@token = YOUR_TOKEN_HERE
+
 ### Create discount — percent (expect 201)
 POST http://localhost:5000/api/discounts
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "10% Off", "type": "percent", "amount": 10 }
 
@@ -9,6 +13,7 @@ Content-Type: application/json
 ### Create discount — fixed (expect 201)
 POST http://localhost:5000/api/discounts
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "$2 Off", "type": "fixed", "amount": 2.00 }
 
@@ -17,6 +22,7 @@ Content-Type: application/json
 ### Create discount — invalid type (expect 400)
 POST http://localhost:5000/api/discounts
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Bad", "type": "bogus", "amount": 5 }
 
@@ -25,6 +31,7 @@ Content-Type: application/json
 ### Create discount — percent over 100 (expect 400)
 POST http://localhost:5000/api/discounts
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Too Much", "type": "percent", "amount": 150 }
 
@@ -32,17 +39,20 @@ Content-Type: application/json
 
 ### Get all active discounts (expect 200)
 GET http://localhost:5000/api/discounts
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get discount by id (expect 200)
 GET http://localhost:5000/api/discounts/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Update discount (expect 200)
 PUT http://localhost:5000/api/discounts/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "15% Off", "type": "percent", "amount": 15 }
 
@@ -50,8 +60,10 @@ Content-Type: application/json
 
 ### Delete (soft) discount (expect 204)
 DELETE http://localhost:5000/api/discounts/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get deleted discount by id (expect 200, isActive: false)
 GET http://localhost:5000/api/discounts/1
+Authorization: Bearer {{token}}

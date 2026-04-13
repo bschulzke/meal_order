@@ -3,15 +3,36 @@
 set -e
 
 API="http://localhost:5000/api"
+TOKEN=""
 
 post() {
   local label="$1"
   local url="$2"
   local data="$3"
+  local auth_header=""
+  if [ -n "$TOKEN" ]; then
+    auth_header="Authorization: Bearer $TOKEN"
+  fi
   local status
   status=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$url" \
-    -H "Content-Type: application/json" -d "$data")
+    -H "Content-Type: application/json" ${auth_header:+-H "$auth_header"} -d "$data")
   echo "$label — $status"
+}
+
+auth_post() {
+  local label="$1"
+  local url="$2"
+  local data="$3"
+  local response
+  response=$(curl -s -X POST "$url" \
+    -H "Content-Type: application/json" -d "$data")
+  TOKEN=$(echo "$response" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+  if [ -n "$TOKEN" ]; then
+    echo "$label — logged in"
+  else
+    echo "$label — FAILED"
+    exit 1
+  fi
 }
 
 echo "=== Users ==="
@@ -19,6 +40,10 @@ post "Virginia Augustus (1001)" "$API/users" \
   '{"username":"1001","password":"password","firstName":"Virginia","lastName":"Augustus"}'
 post "Andrew Wiggin (1002)" "$API/users" \
   '{"username":"1002","password":"password","firstName":"Andrew","lastName":"Wiggin"}'
+
+echo ""
+echo "=== Authenticating ==="
+auth_post "Login as Virginia (1001)" "$API/sessions" '{"username":"1001","password":"password"}'
 
 echo ""
 echo "=== Menu Items ==="
@@ -41,12 +66,9 @@ post "City Tax (4%)" "$API/taxes" '{"name":"City Tax","percentage":4.00}'
 post "State Tax (6.25%)" "$API/taxes" '{"name":"State Tax","percentage":6.25}'
 
 echo ""
-echo "=== Orders ==="
-# IDs assume fresh DB: Users 1-2, MenuItems 1-6, Discounts 1-3, Taxes 1-2
+echo "=== Orders (as Virginia) ==="
 
-# Alice: 1 Hamburger, 2 Medium Fries + 10% Off + City Tax + State Tax
-post "Alice order 1" "$API/orders" '{
-  "userId": 1,
+post "Virginia order 1" "$API/orders" '{
   "items": [
     {"menuItemId": 1, "quantity": 1},
     {"menuItemId": 3, "quantity": 2}
@@ -55,9 +77,7 @@ post "Alice order 1" "$API/orders" '{
   "taxIds": [1, 2]
 }'
 
-# Alice: 1 Cheeseburger, 1 Large Fries, 1 Soda + City Tax + State Tax
-post "Alice order 2" "$API/orders" '{
-  "userId": 1,
+post "Virginia order 2" "$API/orders" '{
   "items": [
     {"menuItemId": 2, "quantity": 1},
     {"menuItemId": 4, "quantity": 1},
@@ -67,9 +87,14 @@ post "Alice order 2" "$API/orders" '{
   "taxIds": [1, 2]
 }'
 
-# Bob: 2 Hamburgers, 1 Milkshake + $2 Off + City Tax + State Tax
-post "Bob order 1" "$API/orders" '{
-  "userId": 2,
+echo ""
+echo "=== Switching to Andrew ==="
+auth_post "Login as Andrew (1002)" "$API/sessions" '{"username":"1002","password":"password"}'
+
+echo ""
+echo "=== Orders (as Andrew) ==="
+
+post "Andrew order 1" "$API/orders" '{
   "items": [
     {"menuItemId": 1, "quantity": 2},
     {"menuItemId": 6, "quantity": 1}

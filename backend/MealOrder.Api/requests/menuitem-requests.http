@@ -1,6 +1,10 @@
+# Replace with a valid token from POST /api/sessions
+@token = YOUR_TOKEN_HERE
+
 ### Create menu item (expect 201)
 POST http://localhost:5000/api/menuitems
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Hamburger", "price": 8.99 }
 
@@ -9,6 +13,7 @@ Content-Type: application/json
 ### Create menu item (expect 201)
 POST http://localhost:5000/api/menuitems
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Medium Fries", "price": 3.49 }
 
@@ -17,6 +22,7 @@ Content-Type: application/json
 ### Create menu item — duplicate name (expect 409)
 POST http://localhost:5000/api/menuitems
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Hamburger", "price": 9.99 }
 
@@ -25,6 +31,7 @@ Content-Type: application/json
 ### Create menu item — invalid price (expect 400)
 POST http://localhost:5000/api/menuitems
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Bad Item", "price": -1 }
 
@@ -32,17 +39,20 @@ Content-Type: application/json
 
 ### Get all active menu items (expect 200)
 GET http://localhost:5000/api/menuitems
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get menu item by id (expect 200)
 GET http://localhost:5000/api/menuitems/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Update menu item (expect 200)
 PUT http://localhost:5000/api/menuitems/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "name": "Hamburger", "price": 9.49 }
 
@@ -50,13 +60,16 @@ Content-Type: application/json
 
 ### Delete (soft) menu item (expect 204)
 DELETE http://localhost:5000/api/menuitems/1
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get all — deleted item should not appear (expect 200)
 GET http://localhost:5000/api/menuitems
+Authorization: Bearer {{token}}
 
 ###
 
 ### Get deleted item by id — still accessible (expect 200, isActive: false)
 GET http://localhost:5000/api/menuitems/1
+Authorization: Bearer {{token}}

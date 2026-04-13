@@ -1,4 +1,5 @@
 using MealOrder.Api.Data;
+using MealOrder.Api.Extensions;
 using MealOrder.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MealOrder.Api.Controllers;
 
 public record OrderItemRequest(int MenuItemId, int Quantity);
-public record CreateOrderRequest(int UserId, List<OrderItemRequest> Items, List<int> DiscountIds, List<int> TaxIds);
+public record CreateOrderRequest(List<OrderItemRequest> Items, List<int> DiscountIds, List<int> TaxIds);
 public record UpdateOrderRequest(List<OrderItemRequest> Items, List<int> DiscountIds, List<int> TaxIds);
 
 [ApiController]
@@ -44,8 +45,7 @@ public class OrdersController(AppDbContext db) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateOrderRequest request)
     {
-        if (!await db.Users.AnyAsync(u => u.Id == request.UserId))
-            return BadRequest("User not found.");
+        var userId = HttpContext.GetAuthenticatedUserId();
 
         if (request.Items is null || request.Items.Count == 0)
             return BadRequest("Order must have at least one item.");
@@ -93,7 +93,7 @@ public class OrdersController(AppDbContext db) : ControllerBase
 
         var order = new Order
         {
-            UserId = request.UserId,
+            UserId = userId,
             Items = request.Items.Select(i => new OrderItem
             {
                 MenuItemId = i.MenuItemId,

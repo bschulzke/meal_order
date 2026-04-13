@@ -1,5 +1,7 @@
 using MealOrder.Api.Data;
+using MealOrder.Api.Extensions;
 using MealOrder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -13,6 +15,7 @@ public record LoginRequest(string Username, string Password);
 public class SessionsController(AppDbContext db) : ControllerBase
 {
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var user = await db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
@@ -35,6 +38,7 @@ public class SessionsController(AppDbContext db) : ControllerBase
     }
 
     [HttpGet("{token}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetSession(string token)
     {
         var session = await db.Sessions
@@ -50,15 +54,13 @@ public class SessionsController(AppDbContext db) : ControllerBase
         return Ok(new { session.User.Id, session.User.Username, session.User.FirstName, session.User.LastName });
     }
 
-    [HttpDelete("{token}")]
-    public async Task<IActionResult> Logout(string token)
+    [HttpDelete]
+    public async Task<IActionResult> Logout()
     {
+        var token = HttpContext.GetSessionToken();
         var session = await db.Sessions.FirstOrDefaultAsync(s => s.Token == token);
 
-        if (session is null)
-            return NotFound();
-
-        db.Sessions.Remove(session);
+        db.Sessions.Remove(session!);
         await db.SaveChangesAsync();
 
         return NoContent();

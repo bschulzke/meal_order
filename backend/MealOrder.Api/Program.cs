@@ -1,4 +1,5 @@
 using MealOrder.Api.Data;
+using MealOrder.Api.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ using (var scope = app.Services.CreateScope())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.MapControllers();
 
