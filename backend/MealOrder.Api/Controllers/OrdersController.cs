@@ -18,6 +18,7 @@ public class OrdersController(AppDbContext db) : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var orders = await db.Orders
+            .Include(o => o.User)
             .Include(o => o.Items).ThenInclude(i => i.MenuItem)
             .Include(o => o.Discounts).ThenInclude(d => d.Discount)
             .Include(o => o.Taxes).ThenInclude(t => t.Tax)
@@ -31,6 +32,7 @@ public class OrdersController(AppDbContext db) : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var order = await db.Orders
+            .Include(o => o.User)
             .Include(o => o.Items).ThenInclude(i => i.MenuItem)
             .Include(o => o.Discounts).ThenInclude(d => d.Discount)
             .Include(o => o.Taxes).ThenInclude(t => t.Tax)
@@ -280,6 +282,8 @@ public class OrdersController(AppDbContext db) : ControllerBase
     {
         o.Id,
         o.UserId,
+        UserFirstName = string.IsNullOrWhiteSpace(o.User.FirstName) ? o.User.Username : o.User.FirstName,
+        UserLastName = string.IsNullOrWhiteSpace(o.User.LastName) ? string.Empty : o.User.LastName,
         o.CreatedAt,
         Items = o.Items.Select(i => new
         {

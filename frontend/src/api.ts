@@ -202,6 +202,8 @@ export interface OrderSummary {
   id: number
   createdAt: string
   userId: number
+  userFirstName: string
+  userLastName: string
   items: { menuItemId: number; menuItemName: string; quantity: number; unitPrice: number }[]
   discounts: { discountId: number; name: string; type: string; amount: number }[]
   taxes: { taxId: number; name: string; percentage: number }[]

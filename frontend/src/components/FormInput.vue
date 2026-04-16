@@ -1,17 +1,3 @@
-<script setup lang="ts">
-defineProps<{
-  label: string
-  type?: string
-  modelValue: string
-  placeholder?: string
-  error?: string
-}>()
-
-defineEmits<{
-  'update:modelValue': [value: string]
-}>()
-</script>
-
 <template>
   <fieldset class="fieldset">
     <legend class="fieldset-legend">{{ label }}</legend>
@@ -26,3 +12,17 @@ defineEmits<{
     <p v-if="error" class="fieldset-label text-error">{{ error }}</p>
   </fieldset>
 </template>
+
+<script setup lang="ts">
+  defineProps<{
+    label: string
+    type?: string
+    modelValue: string
+    placeholder?: string
+    error?: string
+  }>();
+
+  defineEmits<{
+    'update:modelValue': [value: string]
+  }>();
+</script>

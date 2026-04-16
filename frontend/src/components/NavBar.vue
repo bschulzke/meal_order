@@ -1,21 +1,3 @@
-<script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
-
-const router = useRouter()
-const route = useRoute()
-const { user, logout } = useAuth()
-
-function navClass(path: string) {
-  return route.path === path ? 'btn btn-ghost btn-sm btn-active' : 'btn btn-ghost btn-sm'
-}
-
-async function onLogout() {
-  await logout()
-  router.push('/login')
-}
-</script>
-
 <template>
   <div class="navbar bg-base-200 px-4">
     <div class="flex-1 flex gap-1">
@@ -31,3 +13,21 @@ async function onLogout() {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+  import { useRouter, useRoute } from 'vue-router';
+  import { useAuth } from '../composables/useAuth';
+
+  const router = useRouter();
+  const route = useRoute();
+  const { user, logout } = useAuth();
+
+  function navClass(path: string) {
+    return route.path === path ? 'btn btn-ghost btn-sm btn-active' : 'btn btn-ghost btn-sm';
+  }
+
+  async function onLogout() {
+    await logout();
+    router.push('/login');
+  }
+</script>

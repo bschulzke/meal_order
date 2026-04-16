@@ -1,16 +1,3 @@
-<script setup lang="ts">
-defineProps<{
-  title: string
-  submitLabel: string
-  loading?: boolean
-  error?: string
-}>()
-
-defineEmits<{
-  submit: []
-}>()
-</script>
-
 <template>
   <div class="min-h-screen flex items-center justify-center">
     <div class="card bg-base-200 w-full max-w-sm shadow-xl">
@@ -41,3 +28,16 @@ defineEmits<{
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+  defineProps<{
+    title: string
+    submitLabel: string
+    loading?: boolean
+    error?: string
+  }>();
+
+  defineEmits<{
+    submit: []
+  }>();
+</script>

@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from './views/LoginView.vue'
-import RegisterView from './views/RegisterView.vue'
-import PlaceOrderView from './views/PlaceOrderView.vue'
-import OrdersView from './views/OrdersView.vue'
-import MenuItemsView from './views/MenuItemsView.vue'
-import DiscountsView from './views/DiscountsView.vue'
-import TaxesView from './views/TaxesView.vue'
-import { useAuth } from './composables/useAuth'
+import { createRouter, createWebHistory } from 'vue-router';
+import LoginView from './views/LoginView.vue';
+import RegisterView from './views/RegisterView.vue';
+import PlaceOrderView from './views/PlaceOrderView.vue';
+import OrdersView from './views/OrdersView.vue';
+import MenuItemsView from './views/MenuItemsView.vue';
+import DiscountsView from './views/DiscountsView.vue';
+import TaxesView from './views/TaxesView.vue';
+import { useAuth } from './composables/useAuth';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,22 +22,22 @@ const router = createRouter({
   ],
 })
 
-let initPromise: Promise<void> | null = null
+let initPromise: Promise<void> | null = null;
 
 router.beforeEach(async (to) => {
-  const auth = useAuth()
+  const auth = useAuth();
 
   if (!initPromise) {
-    initPromise = auth.init()
+    initPromise = auth.init();
   }
-  await initPromise
+  await initPromise;
 
   if (to.meta.requiresAuth && !auth.isLoggedIn.value) {
-    return '/login'
+    return '/login';
   }
   if ((to.path === '/login' || to.path === '/register') && auth.isLoggedIn.value) {
-    return '/'
+    return '/';
   }
 })
 
-export default router
+export default router;
