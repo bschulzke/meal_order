@@ -104,7 +104,7 @@ docker compose up db
 
 # Terminal 2 — API with hot-reload
 cd backend/MealOrder.Api
-dotnet watch run
+dotnet watch run --environment Development
 ```
 
 ### Frontend
