@@ -25,7 +25,7 @@
                 <td>{{ item.name }}</td>
                 <td>${{ item.price.toFixed(2) }}</td>
                 <td>
-                  <input type="number" min="0" :max="99" class="input input-bordered input-sm w-20" v-model.number="selectedItems.find(i => i.menuItemId === item.id).quantity" @input="setQuantity(item.id, $event.target.value)" />
+                  <input type="number" min="0" :max="99" class="input input-bordered input-sm w-20" v-model.number="selectedItems.find(i => i.menuItemId === item.id)!.quantity"" />
                 </td>
               </tr>
             </tbody>
@@ -142,27 +142,6 @@
       loading.value = false;
     }
   })
-
-  function setQuantity(menuItemId: number, qty: number) {
-    const item = selectedItems.value.find(i => i.menuItemId === menuItemId);
-    if (item) item.quantity = Math.max(0, Math.floor(qty));
-  }
-
-  function toggleDiscount(id: number) {
-    if (selectedDiscountIds.value.includes(id)) {
-      selectedDiscountIds.value = selectedDiscountIds.value.filter(d => d !== id);
-    } else {
-      selectedDiscountIds.value.push(id);
-    }
-  }
-
-  function toggleTax(id: number) {
-    if (selectedTaxIds.value.includes(id)) {
-      selectedTaxIds.value = selectedTaxIds.value.filter(t => t !== id);
-    } else {
-      selectedTaxIds.value.push(id);
-    }
-  }
 
   const itemDetails = computed(() => {
     return selectedItems.value
