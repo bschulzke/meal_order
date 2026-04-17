@@ -18,17 +18,38 @@
       <table class="table table-zebra w-full">
         <thead>
           <tr>
-            <th>Date/Time</th>
-            <th>User</th>
-            <th>Subtotal</th>
-            <th>Discount</th>
-            <th>Pre-Tax Total</th>
-            <th>Tax</th>
-            <th>Total</th>
+            <th @click="sortBy('createdAt')" class="cursor-pointer select-none">
+              Date/Time
+              <span v-if="sortKey === 'createdAt'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('user')" class="cursor-pointer select-none">
+              User
+              <span v-if="sortKey === 'user'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('subtotal')" class="cursor-pointer select-none">
+              Subtotal
+              <span v-if="sortKey === 'subtotal'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('discount')" class="cursor-pointer select-none">
+              Discount
+              <span v-if="sortKey === 'discount'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('preTaxTotal')" class="cursor-pointer select-none">
+              Pre-Tax Total
+              <span v-if="sortKey === 'preTaxTotal'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('tax')" class="cursor-pointer select-none">
+              Tax
+              <span v-if="sortKey === 'tax'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
+            <th @click="sortBy('total')" class="cursor-pointer select-none">
+              Total
+              <span v-if="sortKey === 'total'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in orders" :key="order.id">
+          <tr v-for="order in sortedOrders" :key="order.id">
             <td>{{ new Date(order.createdAt).toLocaleString() }}</td>
             <td>{{ `${order.userFirstName} ${order.userLastName}`.trim() }}</td>
             <td>${{ order.subtotal().toFixed(2) }}</td>
@@ -44,35 +65,76 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import * as api from '../api';
-  import { Order } from '../models/Order';
+import { ref, computed, onMounted } from 'vue';
+import * as api from '../api';
+import { Order } from '../models/Order';
 
-  const orders = ref<Order[]>([]);
-  const loading = ref(false);
-  const error = ref('');
+const orders = ref<Order[]>([]);
+const loading = ref(false);
+const error = ref('');
 
-  async function loadOrders() {
-    loading.value = true;
-    error.value = '';
-    try {
-      const summaries = await api.getOrders();
-      orders.value = summaries.map(s => new Order(
-        s.id,
-        s.userId,
-        s.userFirstName,
-        s.userLastName,
-        s.createdAt,
-        s.items,
-        s.discounts,
-        s.taxes
-      ))
-    } catch (e: any) {
-      error.value = e.message;
-    } finally {
-      loading.value = false;
-    }
+type SortKey =
+  | 'createdAt'
+  | 'user'
+  | 'subtotal'
+  | 'discount'
+  | 'preTaxTotal'
+  | 'tax'
+  | 'total';
+
+const sortKey = ref<SortKey>('createdAt');
+const sortOrder = ref<'asc' | 'desc'>('desc');
+
+function sortBy(key: SortKey) {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortKey.value = key;
+    sortOrder.value = key === 'createdAt' ? 'desc' : 'asc';
   }
+}
 
-  onMounted(loadOrders);
+const sortAccessors: Record<SortKey, (o: Order) => number | string> = {
+  createdAt:   o => new Date(o.createdAt).getTime(),
+  user:        o => `${o.userFirstName} ${o.userLastName}`.toLowerCase(),
+  subtotal:    o => o.subtotal(),
+  discount:    o => o.totalDiscounts(),
+  preTaxTotal: o => o.preTaxTotal(),
+  tax:         o => o.totalTaxes(),
+  total:       o => o.total(),
+};
+
+const sortedOrders = computed(() => {
+  const accessor = sortAccessors[sortKey.value];
+  const dir = sortOrder.value === 'asc' ? 1 : -1;
+
+  return orders.value
+    .map(o => ({ o, k: accessor(o) }))
+    .sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : 0) * dir)
+    .map(({ o }) => o);
+});
+
+async function loadOrders() {
+  loading.value = true;
+  error.value = '';
+  try {
+    const summaries = await api.getOrders();
+    orders.value = summaries.map(s => new Order(
+      s.id,
+      s.userId,
+      s.userFirstName,
+      s.userLastName,
+      s.createdAt,
+      s.items,
+      s.discounts,
+      s.taxes
+    ))
+  } catch (e: any) {
+    error.value = e.message;
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(loadOrders);
 </script>
